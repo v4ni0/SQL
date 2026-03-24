@@ -28,3 +28,39 @@ FROM STARSIN
 JOIN MOVIE ON STARSIN.MOVIETITLE = MOVIE.TITLE AND STARSIN.MOVIEYEAR = MOVIE.YEAR
 JOIN MOVIESTAR ON MOVIESTAR.NAME = STARSIN.STARNAME
 WHERE STUDIONAME = 'MGM' AND GENDER = 'F';
+
+-- 1.4. Напишете заявка, която извежда името на продуцента и имената на
+--      филмите, продуцирани от продуцента на 'Star Wars'.
+SELECT NAME, TITLE
+FROM MOVIE 
+JOIN MOVIEEXEC ON MOVIE.PRODUCERC# = MOVIEEXEC.CERT#
+WHERE NAME  = (SELECT NAME
+               FROM MOVIEEXEC
+                JOIN MOVIE ON MOVIEEXEC.CERT# = MOVIE.PRODUCERC#
+                WHERE TITLE = 'Star Wars');
+
+
+-- 1.5. Напишете заявка, която извежда заглавието, годината и името на 
+--      продуцента на всеки филм. Ако за даден филм продуцентът е неизвестен, 
+--      за име да се използва стойността NULL.
+
+SELECT TITLE, YEAR, NAME 
+FROM MOVIE LEFT JOIN MOVIEEXEC ON MOVIE.PRODUCERC# = MOVIEEXEC.CERT#;
+
+
+-- 1.6. Напишете заявка, която извежда заглавието, годината, името на 
+--      продуцента, името на студиото и адреса на студиото на всеки филм. 
+--      Да се включат и филмите, за които продуцентът и/или студиото е
+--      неизвестно.
+
+SELECT TITLE, YEAR,MOVIEEXEC.NAME, STUDIO.NAME, STUDIO.ADDRESS
+FROM MOVIE
+LEFT JOIN MOVIEEXEC ON MOVIE.PRODUCERC# = MOVIEEXEC.CERT#
+LEFT JOIN STUDIO ON MOVIE.STUDIONAME = STUDIO.NAME;
+
+-- 1.7. Напишете заявка, която извежда имената на актьорите не участвали в
+--      нито един филм.
+SELECT NAME 
+FROM MOVIESTAR 
+LEFT JOIN STARSIN ON MOVIESTAR.NAME = STARSIN.STARNAME
+WHERE STARSIN.STARNAME IS NULL;
