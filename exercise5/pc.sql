@@ -37,3 +37,49 @@ FROM (SELECT price
       FROM product p 
           JOIN laptop ON p.model = laptop.model
       WHERE maker = 'B') u
+
+-- 1.6. Напишете заявка, която извежда средната цена на компютрите 
+--      според различните им честоти
+
+SELECT speed, avg(price) 
+FROM PC 
+GROUP BY SPEED
+
+-- 1.7. Напишете заявка, която извежда производителите, които са 
+--      произвели поне по 3 различни модела компютъра
+
+SELECT maker 
+FROM product
+WHERE type = 'PC'
+GROUP BY maker
+HAVING COUNT(*) >= 3
+-- 1.8. Напишете заявка, която извежда производителите на компютрите с 
+--      най-висока цена
+SELECT maker 
+FROM pc
+JOIN product ON pc.model = product.model
+WHERE price = (SELECT MAX(price) FROM pc)
+
+-- 1.9. Напишете заявка, която извежда средната цена на компютрите 
+--      за всяка честота по-голяма от 800
+SELECT speed, AVG(price) AveragePrice
+FROM pc
+WHERE speed > 800
+GROUP BY speed
+
+-- 1.10. Напишете заявка, която извежда средния размер на диска на 
+--       тези компютри произведени от производители, които произвеждат 
+--       и принтери
+
+SELECT AVG(hd)
+FROM product 
+JOIN pc ON product.model = pc.model
+WHERE maker IN (SELECT maker FROM product WHERE type = 'Printer')
+
+-- 1.11. Напишете заявка, която за всеки размер на лаптоп намира разликата 
+--       в цената на най-скъпия и най-евтиния лаптоп със същия размер
+
+SELECT screen, MAX(price) - MIN(price)
+FROM laptop
+GROUP BY screen
+
